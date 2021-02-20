@@ -1,5 +1,5 @@
 /etc/init.d/mariadb setup
-chownr -R 777 /var/lib/mysql
+chown -R 777 /var/lib/mysql
 rc-update add mariadb
 rc-service mariadb restart
 
