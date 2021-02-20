@@ -1,9 +1,9 @@
 FROM alpine:3.12
 
-EXPOSE 80 443 20
+EXPOSE 80 443 22
 
 RUN apk update \
-    && apk add vim openrc openssh nginx openssl curl
+    && apk add vim openrc nginx openssl curl
 
 RUN openrc reboot
 COPY index.html /var/www/localhost/htdocs/
