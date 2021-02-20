@@ -11,6 +11,6 @@ kubectl delete --all deployments
 kubectl delete --all services
 kubectl delete --all pvc
 
-kubectl apply -f pvcs.yml
+#kubectl apply -f pvcs.yml
 kubectl apply -f services.yml
 kubectl apply -f deployments.yml
