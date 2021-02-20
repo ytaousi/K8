@@ -34,6 +34,8 @@ $cfg['Servers'][$i]['port'] = '3306';
 $cfg['Servers'][$i]['compress'] = false;
 $cfg['Servers'][$i]['AllowNoPassword'] = false;
 
+$cfg['PmaAbsoluteUri'] = (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? '/phpmyadmin': '');
+
 /**
  * phpMyAdmin configuration storage settings.
  */
