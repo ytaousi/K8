@@ -32,4 +32,7 @@ sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= ${PHP_CGI_FIX_PATHINFO}|i" /et
 mysql < /usr/share/webapps/phpmyadmin/sql/create_tables.sql -h ${DB_HOST} -u admin -padmin
 rc-service nginx start
 rc-service php-fpm7 start
-exec /bin/sh
+
+nginx -s stop
+nginx -g 'deamon off;'
+#exec /bin/sh
