@@ -9,7 +9,7 @@ spec:
       matchLabels:
         app: nginx
   replicas: 1
-  #restartPolicy: Always
+  restartPolicy: Always
   template:
     metadata:
       labels:
@@ -30,43 +30,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: influxdb
-  labels:
-    app: influxdb
-spec:
-  selector:
-      matchLabels:
-        app: influxdb
-  replicas: 1
-  #restartPolicy: Always
-  template:
-    metadata:
-      labels:
-        app: influxdb
-    spec:
-      containers:
-      - name: influxdb
-        image: influxdb-img
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 8086
-          name: influxdb
-        volumeMounts:
-        - name : dockerd
-          mountPath: /var/run/docker.sock
-        - name : influxdb-pv
-          mountPath : /var/lib/influxdb      
-      volumes:
-      - name : dockerd
-        hostPath:
-          path: /var/run/docker.sock
-      - name : influxdb-pv
-        persistentVolumeClaim : 
-          claimName : influxdb-pvc
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: mysql
   labels:
     app: mysql
@@ -75,7 +38,6 @@ spec:
       matchLabels:
         app: mysql
   replicas: 1
-  #restartPolicy: Always
   template:
     metadata:
       labels:
@@ -83,7 +45,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql-img
+        image: mysql-image
         imagePullPolicy: Never
         ports:
         - containerPort: 3306
@@ -96,6 +58,7 @@ spec:
       - name : mysql-pv
         persistentVolumeClaim :
           claimName : mysql-pvc
+      restartPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -108,7 +71,6 @@ spec:
       matchLabels:
         app: wordpress
   replicas: 1
-  #restartPolicy: Always
   template:
     metadata:
       labels:
@@ -116,7 +78,7 @@ spec:
     spec:
       containers:
       - name: wordpress
-        image: wp-img
+        image: wp-image
         imagePullPolicy: Never
         env: 
         - name: DB_HOST
@@ -124,13 +86,14 @@ spec:
         ports:
         - containerPort: 5050
           name: wordpress
-      initContainers:
-      - name: init-db
-        image: init-db-img
-        imagePullPolicy: Never
-        env: 
-        - name: DB_HOST
-          value: mysql    
+      restartPolicy: Always
+#      initContainers:
+#      - name: init-db
+#        image: init-db-img
+#        imagePullPolicy: Never
+#        env: 
+#        - name: DB_HOST
+#          value: mysql    
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -143,7 +106,6 @@ spec:
       matchLabels:
         app: phpmyadmin
   replicas: 1
-  #restartPolicy: Always
   template:
     metadata:
       labels:
@@ -151,7 +113,7 @@ spec:
     spec:
       containers:
       - name: phpmyadmin
-        image: pma-img
+        image: pma-image
         imagePullPolicy: Never
         env: 
         - name: DB_HOST
@@ -159,46 +121,12 @@ spec:
         ports:
         - containerPort: 5000
           name: phpmyadmin
-      initContainers:
-      - name: init-db
-        image: init-db-img
-        imagePullPolicy: Never
-        env: 
-        - name: DB_HOST
-          value: mysql
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: grafana
-  labels:
-    app: grafana
-spec:
-  selector:
-      matchLabels:
-        app: grafana
-  replicas: 1
-  #restartPolicy: Always
-  template:
-    metadata:
-      labels:
-        app: grafana
-    spec:
-      containers:
-      - name: grafana
-        image: grafana-img
-        imagePullPolicy: Never
-        env: 
-        - name: DB_HOST
-          value: influxdb
-        ports:
-        - containerPort: 3000
-          name: grafana
-      initContainers:
-      - name: init-influx
-        image: init-influx-img
-        imagePullPolicy: Never
-        env: 
-        - name: DB_HOST
-          value: influxdb
+      restartPolicy: Always
+#      initContainers:
+#      - name: init-db
+#        image: init-db-img
+#        imagePullPolicy: Never
+#        env: 
+#        - name: DB_HOST
+#          value: mysql
 ---
