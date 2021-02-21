@@ -3,8 +3,7 @@ FROM alpine:3.12
 EXPOSE 80 443 22
 
 RUN apk update \
-    && apk add vim openrc nginx openssl curl
-
+    && apk add vim openrc nginx openssl openssh
 RUN openrc reboot
 COPY index.html /var/www/localhost/htdocs/
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old
