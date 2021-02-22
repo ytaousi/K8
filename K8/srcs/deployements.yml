@@ -87,13 +87,13 @@ spec:
         - containerPort: 5050
           name: wordpress
       restartPolicy: Always
-#      initContainers:
-#      - name: init-db
-#        image: init-db-img
-#        imagePullPolicy: Never
-#        env: 
-#        - name: DB_HOST
-#          value: mysql    
+      initContainers:
+      - name: init-db
+        image: init-db-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql    
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -122,11 +122,11 @@ spec:
         - containerPort: 5000
           name: phpmyadmin
       restartPolicy: Always
-#      initContainers:
-#      - name: init-db
-#        image: init-db-img
-#        imagePullPolicy: Never
-#        env: 
-#        - name: DB_HOST
-#          value: mysql
+      initContainers:
+      - name: init-db
+        image: init-db-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql
 ---
