@@ -3,7 +3,7 @@ FROM alpine:3.12
 EXPOSE 80 443 22
 
 RUN apk update \
-    && apk add vim openrc nginx openssl openssh
+    && apk add vim openrc nginx openssh
 
 RUN openrc reboot
 
