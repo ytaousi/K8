@@ -1,0 +1,10 @@
+datasources:
+  - name: influxdb
+    type: influxdb
+    access: proxy
+    database: telegraf
+    user: telegraf
+    password: telegraf
+    url:
+    jsonData:
+      timeInterval: "10s"

@@ -1,0 +1,284 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  labels:
+    app: influxdb
+spec:
+  selector:
+      matchLabels:
+        app: influxdb
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb
+        image: influxdb-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8086
+          name: influxdb
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+        volumeMounts:
+        - name : dockerd
+          mountPath: /var/run/docker.sock
+        - name : influxdb-pv
+          mountPath : /var/lib/influxdb      
+      volumes:
+      - name : dockerd
+        hostPath:
+          path: /var/run/docker.sock
+      - name : influxdb-pv
+        persistentVolumeClaim : 
+          claimName : influxdb-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  selector:
+      matchLabels:
+        app: mysql
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3306
+          name: mysql
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+        volumeMounts:
+        - name : mysql-pv
+          mountPath : /var/lib/mysql
+          subPath : mysql
+      volumes :
+      - name : mysql-pv
+        persistentVolumeClaim :
+          claimName : mysql-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app: wordpress
+spec:
+  selector:
+      matchLabels:
+        app: wordpress
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wp-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql
+        ports:
+        - containerPort: 5050
+          name: wordpress
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+      initContainers:
+      - name: init-db
+        image: init-db-img
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+  labels:
+    app: phpmyadmin
+spec:
+  selector:
+      matchLabels:
+        app: phpmyadmin
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+      - name: phpmyadmin
+        image: pma-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql
+        ports:
+        - containerPort: 5000
+          name: phpmyadmin
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /setup.sh
+#          initialDelaySeconds: 5
+#          periodSeconds: 5
+      initContainers:
+      - name: init-db
+        image: init-db-img
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  selector:
+      matchLabels:
+        app: nginx
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+          name : http
+        - containerPort: 22
+          name : ssh
+        - containerPort: 443
+          name : https
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftps
+  labels:
+    app: ftps
+spec:
+  selector:
+      matchLabels:
+        app: ftps
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: ftps
+    spec:
+      containers:
+      - name: ftps
+        image: ftps-image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 21
+          name : ftps
+        - containerPort: 20
+          name : ftp-data
+        - containerPort: 20021
+          name : ftps-passive21
+        - containerPort: 20020
+          name : ftps-passive20
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+spec:
+  selector:
+      matchLabels:
+        app: grafana
+  replicas: 1
+  #restartPolicy: Always
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: influxdb
+        ports:
+        - containerPort: 3000
+          name: grafana
+#        livenessProbe:
+#          exec:
+#            command:
+#              - sh
+#              - /healthcheck.sh
+#        initialDelaySeconds: 5
+#        periodSeconds: 5
+      initContainers:
+      - name: init-influx
+        image: init-influx-image
+        imagePullPolicy: Never
+        env: 
+        - name: DB_HOST
+          value: influxdb
