@@ -23,13 +23,15 @@ spec:
         ports:
         - containerPort: 8086
           name: influxdb
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - telegraf
+              - influxd
+          initialDelaySeconds: 10
+          periodSeconds: 5
         volumeMounts:
         - name : dockerd
           mountPath: /var/run/docker.sock
@@ -67,13 +69,14 @@ spec:
         ports:
         - containerPort: 3306
           name: mysql
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - mariadbd
+          initialDelaySeconds: 10
+          periodSeconds: 5
         volumeMounts:
         - name : mysql-pv
           mountPath : /var/lib/mysql
@@ -110,13 +113,15 @@ spec:
         ports:
         - containerPort: 5050
           name: wordpress
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - /healthcheck.sh
+              - nginx
+              - php-fpm7
+          initialDelaySeconds: 10
+          periodSeconds: 5
       initContainers:
       - name: init-db
         image: init-db-img
@@ -152,13 +157,15 @@ spec:
         ports:
         - containerPort: 5000
           name: phpmyadmin
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /setup.sh
-#          initialDelaySeconds: 5
-#          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - nginx
+              - php-fpm7
+          initialDelaySeconds: 10
+          periodSeconds: 5
       initContainers:
       - name: init-db
         image: init-db-img
@@ -195,13 +202,15 @@ spec:
           name : ssh
         - containerPort: 443
           name : https
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - nginx
+              - sshd
+          initialDelaySeconds: 10
+          periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -233,13 +242,14 @@ spec:
           name : ftps-passive21
         - containerPort: 20020
           name : ftps-passive20
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - vsftpd
+          initialDelaySeconds: 10
+          periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -268,13 +278,14 @@ spec:
         ports:
         - containerPort: 3000
           name: grafana
-#        livenessProbe:
-#          exec:
-#            command:
-#              - sh
-#              - /healthcheck.sh
-#        initialDelaySeconds: 5
-#        periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - /healthcheck.sh
+              - grafana-server
+          initialDelaySeconds: 10
+          periodSeconds: 5
       initContainers:
       - name: init-influx
         image: init-influx-image

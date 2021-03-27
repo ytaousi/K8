@@ -7,11 +7,13 @@ RUN apk add openrc vim grafana
 
 COPY setup.sh /setup.sh
 RUN chmod 777 /setup.sh
+COPY healthcheck.sh /healthcheck.sh
+RUN chmod 777 /healthcheck.sh
 
 #setup openrc
 RUN mkdir -p  /run/openrc/
 RUN touch /run/openrc/softlevel
-
+#setup dataresources
 COPY influxdb.yaml /usr/share/grafana/conf/provisioning/datasources/influxdb.yaml
 COPY dashboards.yaml /usr/share/grafana/conf/provisioning/dashboards/dashboards.yaml
 

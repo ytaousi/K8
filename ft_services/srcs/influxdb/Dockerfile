@@ -17,6 +17,9 @@ RUN touch /run/openrc/softlevel
 COPY setup.sh /setup.sh
 RUN chmod 777 /setup.sh
 
+COPY healthcheck.sh /healthcheck.sh
+RUN chmod 777 /healthcheck.sh
+
 # set conf files
 COPY influxdb.conf /etc/influxdb.conf
 COPY telegraf.conf /etc/telegraf/telegraf.conf

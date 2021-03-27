@@ -7,6 +7,9 @@ RUN apk add mysql openrc mysql-client vim
 COPY setup.sh /setup.sh
 RUN chmod 777 /setup.sh
 
+COPY healthcheck.sh /healthcheck.sh
+RUN chmod 777 /healthcheck.sh
+
 RUN mkdir -p  /run/openrc/
 
 COPY mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf

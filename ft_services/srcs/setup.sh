@@ -17,7 +17,7 @@ eval $(/goinfre/ytaousi/brew/bin/minikube docker-env)
 /goinfre/ytaousi/brew/bin/docker build -t influxdb-image influxdb/
 /goinfre/ytaousi/brew/bin/docker build -t grafana-image grafana/
 
-#init containers
+#init container
 /goinfre/ytaousi/brew/bin/docker build mysql/init-db -t init-db-img
 /goinfre/ytaousi/brew/bin/docker build influxdb/init-influx -t init-influx-image
 

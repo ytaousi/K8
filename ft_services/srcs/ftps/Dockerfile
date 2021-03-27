@@ -7,6 +7,8 @@ RUN apk add vsftpd openssl openrc vim
 
 COPY setup.sh /setup.sh
 RUN chmod 777 /setup.sh
+COPY healthcheck.sh /healthcheck.sh
+RUN chmod 777 /healthcheck.sh
 
 #create user
 RUN adduser -D admin
@@ -21,11 +23,11 @@ COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
 COPY vsftpd.chroot_list /etc/vsftpd.chroot_list
 
 #set ssl encryption
-COPY ssl/cert.pem /etc/ssl/certs/cert.pem
-COPY ssl/cert.key /etc/ssl/private/cert.key
+COPY ssl/ftps-selfsigned.crt /etc/ssl/certs/cert.crt
+COPY ssl/ftps-selfsigned.key /etc/ssl/private/cert.key
 
 #put files for testing
-COPY ssl/cert.key /home/admin
-COPY ssl/cert.pem /home/admin
+COPY ssl/ftps-selfsigned.crt /home/admin
+COPY ssl/ftps-selfsigned.key /home/admin
 
 ENTRYPOINT ["/bin/sh" ,"/setup.sh"]
